@@ -6,8 +6,6 @@
   <a href="https://github.com/CraftJarvis/JarvisVLA"><img src="https://img.shields.io/badge/Based%20on-JarvisVLA-orange" alt="JarvisVLA"></a>
 </p>
 
-GROW is a vision-language-action model for Minecraft agent evaluation. This repository contains the evaluation code used to run GROW on the OpenHA benchmark, including batched vLLM inference, OpenHA rollout orchestration, action-token decoding, and resume-aware rollout collection.
-
 ![GROW overview](assets/main_picture.png)
 
 ## News
