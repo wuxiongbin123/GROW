@@ -129,7 +129,7 @@ We thank the following projects for their excellent work:
 
 ## Citation
 
-If you find GROW useful, please cite our paper:
+If you find GROW useful, please consider citing our paper:
 
 ```bibtex
 @article{grow2026,
