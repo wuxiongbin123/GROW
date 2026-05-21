@@ -2,8 +2,7 @@
 
 <p align="center">
   <a href="https://huggingface.co/sys555/GROW"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Weights-sys555%2FGROW-blue" alt="Hugging Face weights"></a>
-  <a href="https://github.com/CraftJarvis/OpenHA"><img src="https://img.shields.io/badge/Benchmark-OpenHA-green" alt="OpenHA"></a>
-  <a href="https://github.com/CraftJarvis/JarvisVLA"><img src="https://img.shields.io/badge/Based%20on-JarvisVLA-orange" alt="JarvisVLA"></a>
+  <a href="https://arxiv.org/abs/2605.20246"><img src="https://img.shields.io/badge/arXiv-2605.20246-b31b1b.svg" alt="arXiv"></a>
 </p>
 
 ![GROW overview](assets/main_picture.png)
