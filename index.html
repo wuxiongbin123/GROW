@@ -163,30 +163,30 @@
           <div class="section-heading split-heading" data-reveal>
             <div>
               <p class="kicker">The central idea</p>
-              <h2>RL that fits the world<br />it acts in.</h2>
+              <h2>GRPO for open-world<br />VLM agents.</h2>
             </div>
             <p class="section-lede">
-              Standard GRPO treats every full rollout as one optimization sample. In open worlds, that sample
-              quickly becomes too long and too noisy. GROW preserves the group-relative comparison, but moves the
-              learning unit to the decisions that matter: local states and actions.
+              GROW is a RL framework for open-world VLM agents that decomposes collected trajectories into
+              state-action samples, and computes advantages between these samples rather than treating a full
+              trajectory as a single entity.
             </p>
           </div>
 
           <div class="contribution-grid">
             <article class="contribution" data-reveal>
               <span class="contribution-index">01</span>
-              <h3>Decompose trajectories</h3>
-              <p>Convert each multi-turn rollout into compact state–action samples with manageable context.</p>
+              <h3>State-action training</h3>
+              <p>The framework combines cold-start training on state-action samples with GRPO-based policy refinement.</p>
             </article>
             <article class="contribution" data-reveal data-delay="80">
               <span class="contribution-index">02</span>
-              <h3>Propagate sparse rewards</h3>
-              <p>Discount task-level success backward so decisions nearer completion receive stronger credit.</p>
+              <h3>Trajectory decomposition</h3>
+              <p>GROW applies trajectory decomposition to collected rollouts and computes relative advantages among state-action samples.</p>
             </article>
             <article class="contribution" data-reveal data-delay="160">
               <span class="contribution-index">03</span>
-              <h3>Optimize relatively</h3>
-              <p>Normalize rewards across the decomposed rollout group and refine the policy without training a separate value model.</p>
+              <h3>Surrogate analysis</h3>
+              <p>The proposed objective can still provide an effective relative policy optimization signal under simplifying assumptions.</p>
             </article>
           </div>
         </div>
@@ -441,82 +441,135 @@
           <div class="section-heading results-heading" data-reveal>
             <div>
               <p class="kicker">Main results</p>
-              <h2>Higher success.<br />Fewer actions.</h2>
+              <h2>Evaluation results<br />from the paper.</h2>
             </div>
             <p>
-              Across more than 800 Minecraft tasks, GROW sets the best reported success rate and execution efficiency
-              in embodied, GUI, and combat task families.
+              Table 1 shows that GROW achieves the best performance across all three Minecraft task categories.
+              The agent improves both success rate and execution efficiency on over 800 tasks.
             </p>
           </div>
 
-          <div class="result-card-grid">
-            <article class="result-card result-embodied" data-reveal>
-              <div class="result-top"><span>Embodied</span><small>01</small></div>
-              <div class="result-value">59.6<sup>%</sup></div>
-              <p>Average success rate</p>
-              <div class="result-rule"></div>
-              <div class="result-bottom"><span><strong>+9.2 pp</strong> vs. prior best</span><span><strong>128</strong> steps</span></div>
-            </article>
-            <article class="result-card result-gui" data-reveal data-delay="80">
-              <div class="result-top"><span>GUI</span><small>02</small></div>
-              <div class="result-value">68.4<sup>%</sup></div>
-              <p>Average success rate</p>
-              <div class="result-rule"></div>
-              <div class="result-bottom"><span><strong>+29.3 pp</strong> vs. prior best</span><span><strong>248</strong> steps</span></div>
-            </article>
-            <article class="result-card result-combat" data-reveal data-delay="160">
-              <div class="result-top"><span>Combat</span><small>03</small></div>
-              <div class="result-value">49.0<sup>%</sup></div>
-              <p>Average success rate</p>
-              <div class="result-rule"></div>
-              <div class="result-bottom"><span><strong>+9.8 pp</strong> vs. prior best</span><span><strong>172</strong> steps</span></div>
-            </article>
+          <div class="paper-table-stack">
+            <figure class="paper-table-card" data-reveal>
+              <figcaption>
+                Evaluation results of Minecraft agents on over 800 tasks.
+                ASR is reported as the mean value alongside its standard deviation.
+                The best performance is marked in <strong>bold</strong>, and the second-best performance is <u>underlined</u>.
+              </figcaption>
+              <div class="table-scroll" role="region" aria-label="Evaluation results of Minecraft agents on over 800 tasks" tabindex="0">
+                <table class="paper-table">
+                  <thead>
+                    <tr>
+                      <th rowspan="2">Model</th>
+                      <th rowspan="2">Size</th>
+                      <th colspan="2">Embodied Tasks</th>
+                      <th colspan="2">GUI Tasks</th>
+                      <th colspan="2">Combat Tasks</th>
+                    </tr>
+                    <tr>
+                      <th>Steps</th>
+                      <th>ASR (All)</th>
+                      <th>Steps</th>
+                      <th>ASR (All)</th>
+                      <th>Steps</th>
+                      <th>ASR (All)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>VPT</td><td>248M</td><td>377</td><td>6.0<sup>±11.4</sup></td><td>398</td><td>0.8<sup>±3.3</sup></td><td>396</td><td>3.6<sup>±7.7</sup></td></tr>
+                    <tr><td>STEVE-1</td><td>248M</td><td>384</td><td>8.0<sup>±17.0</sup></td><td>391</td><td>3.2<sup>±8.4</sup></td><td>395</td><td>3.9<sup>±12.0</sup></td></tr>
+                    <tr><td>ROCKET-1</td><td>72B</td><td>392</td><td>18.9<sup>±24.3</sup></td><td>N/A</td><td>0.0</td><td>320</td><td>27.9<sup>±29.3</sup></td></tr>
+                    <tr><td>JARVIS-VLA</td><td>7B</td><td>305</td><td>30.0<sup>±35.4</sup></td><td>339</td><td>25.1<sup>±23.9</sup></td><td>352</td><td>18.5<sup>±22.7</sup></td></tr>
+                    <tr><td>UI-TARS-1.5</td><td>7B</td><td>290</td><td>42.1<sup>±20.4</sup></td><td>320</td><td>36.7<sup>±17.2</sup></td><td>346</td><td>31.0<sup>±16.4</sup></td></tr>
+                    <tr><td>OpenHA</td><td>7B</td><td>287</td><td>30.1<sup>±13.9</sup></td><td>314</td><td>32.5<sup>±9.2</sup></td><td>316</td><td>31.9<sup>±13.7</sup></td></tr>
+                    <tr><td>Game-TARS</td><td>7B</td><td>373</td><td><u>50.4<sup>±20.7</sup></u></td><td>406</td><td><u>39.1<sup>±27.5</sup></u></td><td>372</td><td>38.1<sup>±4.6</sup></td></tr>
+                    <tr><td>MAIN-VLA</td><td>7B</td><td><u>263</u></td><td>32.8<sup>±15.4</sup></td><td><u>291</u></td><td>34.4<sup>±14.4</sup></td><td><u>248</u></td><td><u>39.2<sup>±16.2</sup></u></td></tr>
+                    <tr class="ours-row"><td><strong>Ours</strong></td><td><strong>7B</strong></td><td><strong>128</strong></td><td><strong>59.6<sup>±37.2</sup></strong></td><td><strong>248</strong></td><td><strong>68.4<sup>±29.0</sup></strong></td><td><strong>172</strong></td><td><strong>49.0<sup>±35.7</sup></strong></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </figure>
+
+            <figure class="paper-table-card" data-reveal>
+              <figcaption>
+                Success rates before and after RL on in-domain and out-domain Minecraft tasks.
+                Success rates are reported as the mean value alongside their standard deviation.
+              </figcaption>
+              <div class="table-scroll" role="region" aria-label="Success rates before and after RL on in-domain and out-domain Minecraft tasks" tabindex="0">
+                <table class="paper-table">
+                  <thead>
+                    <tr>
+                      <th rowspan="2">Model</th>
+                      <th colspan="3">RL-Trained</th>
+                      <th colspan="3">RL-Unseen</th>
+                    </tr>
+                    <tr>
+                      <th>Embodied Tasks</th>
+                      <th>GUI Tasks</th>
+                      <th>Combat Tasks</th>
+                      <th>Embodied Tasks</th>
+                      <th>GUI Tasks</th>
+                      <th>Combat Tasks</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Initialized Policy</td>
+                      <td>35.0<sup>±7.1</sup></td>
+                      <td>10.0<sup>±8.2</sup></td>
+                      <td>45.0<sup>±21.2</sup></td>
+                      <td>41.9<sup>±34.7</sup></td>
+                      <td>21.3<sup>±24.8</sup></td>
+                      <td>19.8<sup>±24.4</sup></td>
+                    </tr>
+                    <tr class="ours-row">
+                      <td><strong>Ours</strong></td>
+                      <td><strong>90.0<sup>±14.1</sup></strong></td>
+                      <td><strong>92.5<sup>±5.0</sup></strong></td>
+                      <td><strong>85.0<sup>±21.2</sup></strong></td>
+                      <td><strong>59.2<sup>±37.4</sup></strong></td>
+                      <td><strong>68.2<sup>±29.1</sup></strong></td>
+                      <td><strong>47.5<sup>±35.9</sup></strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </figure>
+
+            <figure class="paper-table-card" data-reveal>
+              <figcaption>
+                Ablation study on RL algorithms and the discount factor γ.
+                All experiments are trained on the same task set for the same number of training steps to ensure a fair comparison.
+              </figcaption>
+              <div class="table-scroll" role="region" aria-label="Ablation study on RL algorithms and the discount factor gamma" tabindex="0">
+                <table class="paper-table">
+                  <thead>
+                    <tr>
+                      <th rowspan="2">Method</th>
+                      <th rowspan="2">γ</th>
+                      <th colspan="2">Embodied Tasks</th>
+                      <th colspan="2">GUI Tasks</th>
+                      <th colspan="2">Combat Tasks</th>
+                    </tr>
+                    <tr>
+                      <th>Steps</th>
+                      <th>ASR (All)</th>
+                      <th>Steps</th>
+                      <th>ASR (All)</th>
+                      <th>Steps</th>
+                      <th>ASR (All)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>PPO</td><td>0.995</td><td>177</td><td>58.2<sup>±30.3</sup></td><td>580</td><td>43.9<sup>±24.3</sup></td><td>181</td><td>45.4<sup>±32.2</sup></td></tr>
+                    <tr><td>GROW</td><td>0.9</td><td>142</td><td>42.0<sup>±35.2</sup></td><td>292</td><td>34.9<sup>±34.4</sup></td><td>170</td><td>45.1<sup>±37.8</sup></td></tr>
+                    <tr><td>GROW</td><td>0.95</td><td><strong>122</strong></td><td>59.0<sup>±25.9</sup></td><td>309</td><td>62.0<sup>±20.6</sup></td><td><strong>167</strong></td><td>46.6<sup>±34.5</sup></td></tr>
+                    <tr class="ours-row"><td><strong>GROW</strong></td><td><strong>0.995</strong></td><td>128</td><td><strong>59.6<sup>±37.2</sup></strong></td><td><strong>248</strong></td><td><strong>68.4<sup>±29.0</sup></strong></td><td>172</td><td><strong>49.0<sup>±35.7</sup></strong></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </figure>
           </div>
-          <p class="result-note" data-reveal>ASR is reported as mean over all tasks in each category; standard deviations appear in the paper. “Prior best” follows the reported baselines.</p>
-
-          <div class="generalization-grid">
-            <div class="generalization-copy" data-reveal>
-              <p class="kicker">Generalization</p>
-              <h3>The gains travel to tasks held out from RL.</h3>
-              <p>
-                Starting from an SFT-initialized Qwen2-VL-7B policy, reinforcement learning uses only eight Minecraft
-                tasks. Yet the learned interaction strategies transfer across all three families, with the largest
-                RL-held-out gain in visually cluttered GUI operation.
-              </p>
-              <div class="training-facts">
-                <span><strong>8</strong> RL tasks</span><span><strong>240</strong> iterations</span><span><strong>γ = .995</strong></span>
-              </div>
-            </div>
-
-            <div class="bar-chart" role="img" aria-label="Initialized policy and GROW success rates on tasks held out from RL" data-reveal data-delay="100">
-              <div class="chart-legend"><span class="legend-before">Initialized</span><span class="legend-grow">GROW</span></div>
-              <div class="bar-group">
-                <div class="bar-label"><span>Embodied</span><strong>+17.3 pp</strong></div>
-                <div class="bar-row"><i class="bar before" style="--value: 41.9%"><b>41.9</b></i><i class="bar grow" style="--value: 59.2%"><b>59.2</b></i></div>
-              </div>
-              <div class="bar-group">
-                <div class="bar-label"><span>GUI</span><strong>+46.9 pp</strong></div>
-                <div class="bar-row"><i class="bar before" style="--value: 21.3%"><b>21.3</b></i><i class="bar grow" style="--value: 68.2%"><b>68.2</b></i></div>
-              </div>
-              <div class="bar-group">
-                <div class="bar-label"><span>Combat</span><strong>+27.7 pp</strong></div>
-                <div class="bar-row"><i class="bar before" style="--value: 19.8%"><b>19.8</b></i><i class="bar grow" style="--value: 47.5%"><b>47.5</b></i></div>
-              </div>
-              <p>Success rate on tasks held out from RL (%)</p>
-            </div>
-          </div>
-
-          <figure class="paper-figure curve-figure" data-reveal>
-            <div class="figure-heading">
-              <div><p class="kicker">Learning dynamics</p><h3>GROW learns faster than PPO on most training tasks.</h3></div>
-              <p>Eight RL tasks · identical training budget</p>
-            </div>
-            <button class="figure-open" type="button" data-lightbox="assets/figures/training_curves.png" data-caption="Training success curves comparing GROW and PPO across eight RL tasks.">
-              <img src="assets/figures/training_curves.png" alt="Eight plots comparing GROW and PPO success during training" loading="lazy" />
-              <span>Expand figure ↗</span>
-            </button>
-            <figcaption>GROW generally reaches high-success regions earlier and avoids long low-success plateaus.</figcaption>
-          </figure>
         </div>
       </section>
 
@@ -525,11 +578,11 @@
           <div class="section-heading split-heading" data-reveal>
             <div>
               <p class="kicker">Behavior-level analysis</p>
-              <h2>Rewards become<br />reusable behaviors.</h2>
+              <h2>Diagnostic tasks<br />in Minecraft.</h2>
             </div>
             <p class="section-lede">
-              Diagnostic tasks isolate what changes in the policy. GROW learns to hold alignment, recover lost targets,
-              and ignore irrelevant GUI elements—local behaviors that support many downstream tasks.
+              We conduct a behavior-level analysis on three diagnostic tasks in Minecraft to examine how GROW changes
+              the learned policy. Each task isolates a specific interaction skill.
             </p>
           </div>
 
@@ -538,19 +591,19 @@
               <div class="behavior-value">63.3<sup>%</sup></div>
               <span class="behavior-tag">Stable fixation</span>
               <h3>Mine Obsidian with an Iron Pickaxe</h3>
-              <p>Sustain crosshair alignment across a long breaking sequence. Both compared baselines score 0%.</p>
+              <p>Breaking obsidian with an iron pickaxe requires sustained crosshair alignment over a long mining process, rather than a single correct action.</p>
             </article>
             <article class="behavior-card" data-reveal data-delay="80">
               <div class="behavior-value">50.0<sup>%</sup></div>
               <span class="behavior-tag">Target reacquisition</span>
               <h3>Kill a Witch Starting Out of Sight</h3>
-              <p>Search, restore visual contact, pursue, and re-engage a moving target. Both baselines score 0%.</p>
+              <p>Since the witch starts outside the field of view, the agent must search, recover visual contact, and continue pursuit as the target moves away.</p>
             </article>
             <article class="behavior-card" data-reveal data-delay="160">
               <div class="behavior-value">50.0<sup>%</sup></div>
               <span class="behavior-tag">Distractor robustness</span>
               <h3>Craft Cake with Visual Distractions</h3>
-              <p>Select the right recipe among irrelevant items, versus 40% for JARVIS-VLA and 2% before RL.</p>
+              <p>The recipe book and inventory contain many irrelevant items, requiring the agent to select the correct cake recipe under visual clutter.</p>
             </article>
           </div>
 
@@ -592,7 +645,7 @@
       <section class="section resources-section" id="resources">
         <div class="shell">
           <div class="section-heading resources-heading" data-reveal>
-            <div><p class="kicker">Resources</p><h2>Read. Run. Build.</h2></div>
+            <div><p class="kicker">Resources</p><h2>Read. Evaluate. Get weights.</h2></div>
             <p>Paper, evaluation code, and the released checkpoint are publicly available.</p>
           </div>
 
@@ -604,7 +657,7 @@
               <span class="resource-icon">C</span><div><small>Evaluation code</small><h3>Explore the code</h3></div><b>↗</b>
             </a>
             <a href="https://huggingface.co/sys555/GROW" target="_blank" rel="noreferrer" data-reveal data-delay="140">
-              <span class="resource-icon">M</span><div><small>Hugging Face</small><h3>Get the model</h3></div><b>↗</b>
+              <span class="resource-icon">M</span><div><small>Hugging Face weights</small><h3>Get the weights</h3></div><b>↗</b>
             </a>
           </div>
 
