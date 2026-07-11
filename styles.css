@@ -606,8 +606,7 @@ a:focus-visible {
   align-items: end;
 }
 
-.section-heading h2,
-.beyond-section h2 {
+.section-heading h2 {
   margin: 0;
   font-family: var(--serif);
   font-size: clamp(2.8rem, 5.7vw, 5.2rem);
@@ -617,8 +616,7 @@ a:focus-visible {
 }
 
 .section-lede,
-.section-heading > p,
-.beyond-section p {
+.section-heading > p {
   margin: 0;
   color: var(--ink-soft);
   line-height: 1.8;
@@ -1592,91 +1590,7 @@ a:focus-visible {
   font-size: 0.58rem;
 }
 
-/* Transfer, resources, footer */
-
-.beyond-section {
-  padding: 110px 0;
-  color: #f3f8ff;
-  background:
-    radial-gradient(circle at 10% 130%, rgba(124, 199, 255, 0.18), transparent 35%),
-    radial-gradient(circle at 90% -20%, rgba(37, 99, 235, 0.18), transparent 32%),
-    var(--night);
-}
-
-.beyond-grid {
-  display: grid;
-  grid-template-columns: minmax(300px, 0.78fr) minmax(420px, 1.22fr);
-  gap: 100px;
-  align-items: center;
-}
-
-.beyond-section p:not(.kicker) {
-  max-width: 580px;
-  margin-top: 24px;
-  color: rgba(243, 248, 255, 0.58);
-}
-
-.beyond-score {
-  padding: 38px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  border-radius: 20px;
-}
-
-.score-row {
-  display: grid;
-  grid-template-columns: 56px 1fr 52px;
-  gap: 15px;
-  align-items: center;
-  color: rgba(243, 248, 255, 0.62);
-  font-size: 0.7rem;
-  font-weight: 700;
-}
-
-.score-row + .score-row {
-  margin-top: 19px;
-}
-
-.score-row > div {
-  height: 28px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 5px;
-}
-
-.score-row i {
-  display: block;
-  width: var(--score);
-  height: 100%;
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.grow-score {
-  color: var(--lime);
-}
-
-.grow-score i {
-  background: linear-gradient(90deg, #2563eb, var(--lime));
-}
-
-.score-row strong {
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-}
-
-.beyond-score > p {
-  display: flex;
-  justify-content: space-between;
-  margin: 30px 0 0 !important;
-  padding-top: 22px;
-  color: rgba(243, 248, 255, 0.5) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 0.62rem;
-}
-
-.beyond-score > p b {
-  color: var(--lime);
-}
+/* Resources and footer */
 
 .resources-section {
   background: #f7fbff;
@@ -2022,7 +1936,6 @@ a:focus-visible {
   .rollouts-heading,
   .motivation-grid,
   .generalization-grid,
-  .beyond-grid,
   .story-heading {
     grid-template-columns: 1fr;
     gap: 30px;
@@ -2077,10 +1990,6 @@ a:focus-visible {
 
   .storyboard {
     gap: 8px;
-  }
-
-  .beyond-grid {
-    gap: 55px;
   }
 
   .footer-grid {
@@ -2154,8 +2063,7 @@ a:focus-visible {
     font-size: 0.58rem;
   }
 
-  .section-heading h2,
-  .beyond-section h2 {
+  .section-heading h2 {
     font-size: clamp(2.65rem, 14vw, 4rem);
   }
 
@@ -2266,19 +2174,6 @@ a:focus-visible {
   .storyboard figure {
     flex: 0 0 84vw;
     scroll-snap-align: start;
-  }
-
-  .beyond-section {
-    padding: 78px 0;
-  }
-
-  .beyond-score {
-    padding: 24px 18px;
-  }
-
-  .beyond-score > p {
-    display: grid;
-    gap: 6px;
   }
 
   .resource-grid > a {
