@@ -241,6 +241,11 @@ class RolloutSession:
         self.subgoal_idx = 0
         self.processed_raw_actions = [{"raw_action": ""}]
         self.start_time = 0.0
+        self.fps_timer_start = 0.0
+        self.fps_timer_start_wall = 0.0
+        self.fps_timer_end = 0.0
+        self.realtime_wall_time_sec = 0.0
+        self.realtime_fps = 0.0
         self.run_frame_idx = 0
         self.pending_actions = []
         self.current_raw_response = ""
@@ -300,6 +305,35 @@ class RolloutSession:
 
     def current_instruction(self) -> str:
         return self.instructions[self.subgoal_idx]
+
+    def start_fps_timer(self):
+        if self.fps_timer_start > 0:
+            return
+        self.fps_timer_start = time.perf_counter()
+        self.fps_timer_start_wall = time.time()
+        logging.info(
+            "Realtime FPS timer started: task=%s frame=%s",
+            self.task_name,
+            self.run_frame_idx,
+        )
+
+    def stop_fps_timer(self) -> dict:
+        if self.fps_timer_start <= 0:
+            self.start_fps_timer()
+        self.fps_timer_end = time.perf_counter()
+        self.realtime_wall_time_sec = max(self.fps_timer_end - self.fps_timer_start, 1e-6)
+        self.realtime_fps = self.run_frame_idx / self.realtime_wall_time_sec
+        return {
+            "frames": self.run_frame_idx,
+            "wall_time_sec": self.realtime_wall_time_sec,
+            "fps": self.realtime_fps,
+            "timer_start_unix": self.fps_timer_start_wall,
+            "definition": (
+                "agent_control_frames divided by wall-clock seconds; timer starts when "
+                "the active rollout runner begins after env reset/prewarm and stops "
+                "before end pause or video rendering"
+            ),
+        }
 
     def needs_model_action(self) -> bool:
         return not self.done and not self.pending_actions
@@ -375,12 +409,23 @@ class RolloutSession:
         from openagents.utils.render import render_video
 
         try:
+            fps_metrics = self.stop_fps_timer()
             logging.info(
-                "Task %s finished after %s frames, success=%s, FPS=%.4f",
+                "Realtime evaluation FPS: task=%s frames=%s wall_time=%.4fs fps=%.4f success=%s",
                 self.task_name,
-                self.run_frame_idx,
+                fps_metrics["frames"],
+                fps_metrics["wall_time_sec"],
+                fps_metrics["fps"],
                 self.success_state,
-                self.run_frame_idx / max(time.time() - self.start_time, 1e-6),
+            )
+            print(
+                "[REALTIME_FPS] "
+                f"task={self.task_name} "
+                f"frames={fps_metrics['frames']} "
+                f"wall_time_sec={fps_metrics['wall_time_sec']:.4f} "
+                f"fps={fps_metrics['fps']:.4f} "
+                f"success={self.success_state}",
+                flush=True,
             )
 
             end_pause = random.randint(5, 20) if self.success_state else 1
@@ -392,7 +437,13 @@ class RolloutSession:
             self.flush_raw_actions()
 
             marker_path = "success.json" if self.success_state else "loss.json"
-            payload = {"frames": self.run_frame_idx, "args": vars(self.args)}
+            payload = {
+                "frames": self.run_frame_idx,
+                "wall_time_sec": fps_metrics["wall_time_sec"],
+                "fps": fps_metrics["fps"],
+                "fps_metrics": fps_metrics,
+                "args": vars(self.args),
+            }
             if self.success_state:
                 payload["success"] = True
             with open(os.path.join(self.rollout_path, marker_path), "w", encoding="utf-8") as f:
@@ -531,6 +582,7 @@ class EnvironmentRunner(threading.Thread):
 
     def run(self):
         try:
+            self.session.start_fps_timer()
             while not self.session.done:
                 if self.session.needs_model_action():
                     response_queue = queue.Queue(maxsize=1)
