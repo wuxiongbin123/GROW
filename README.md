@@ -1,6 +1,7 @@
 <h1 align="center">GROW</h1>
 
 <p align="center">
+  <a href="https://wuxiongbin123.github.io/GROW/"><img src="https://img.shields.io/badge/Project-Page-2563eb" alt="Project page"></a>
   <a href="https://huggingface.co/sys555/GROW"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Weights-sys555%2FGROW-blue" alt="Hugging Face weights"></a>
   <a href="https://arxiv.org/abs/2605.20246"><img src="https://img.shields.io/badge/arXiv-2605.20246-b31b1b.svg" alt="arXiv"></a>
 </p>
@@ -24,7 +25,7 @@ The released checkpoint is hosted on Hugging Face:
 Clone this repository with submodules, then create a Python environment:
 
 ```bash
-git clone --recurse-submodules https://github.com/TODO/GROW.git
+git clone --recurse-submodules https://github.com/wuxiongbin123/GROW.git
 cd GROW
 
 conda create -n grow python=3.10 -y
@@ -131,10 +132,12 @@ We thank the following projects for their excellent work:
 If you find GROW useful, please consider citing our paper:
 
 ```bibtex
-@article{grow2026,
-  title   = {GROW: TODO},
-  author  = {TODO},
-  journal = {TODO},
+@article{wu2026grow,
+  title   = {GROW: Aligning GRPO with State-Action Modeling for Open-World VLM Agents},
+  author  = {Wu, Xiongbin and Luo, Zhihao and Lei, Shanzhe and Zhang, Lechao and
+             Wang, Xuhong and Yang, Jie and Zheng, Zhonglong and Zheng, Yuanjie and
+             Tan, Xin and Liu, Wei},
+  journal = {arXiv preprint arXiv:2605.20246},
   year    = {2026}
 }
 ```

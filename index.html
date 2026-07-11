@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="GROW aligns GRPO with state-action modeling for open-world vision-language agents, achieving state-of-the-art results across more than 800 Minecraft tasks."
+    />
+    <meta name="theme-color" content="#08213f" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="GROW — GRPO for Open-World VLM Agents" />
+    <meta
+      property="og:description"
+      content="Turn long, noisy rollouts into state-action learning signals for open-world VLM agents."
+    />
+    <meta property="og:image" content="https://wuxiongbin123.github.io/GROW/assets/main_picture.png" />
+    <meta property="og:url" content="https://wuxiongbin123.github.io/GROW/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://wuxiongbin123.github.io/GROW/" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+    <title>GROW — GRPO for Open-World VLM Agents</title>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header" data-header>
+      <nav class="nav shell" aria-label="Primary navigation">
+        <a class="brand" href="#top" aria-label="GROW home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>GROW</span>
+        </a>
+
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-label="Open navigation"
+          aria-controls="nav-links"
+          aria-expanded="false"
+          data-nav-toggle
+        >
+          <span></span><span></span>
+        </button>
+
+        <div class="nav-links" id="nav-links" data-nav-links>
+          <a href="#rollouts">Rollouts</a>
+          <a href="#method">Method</a>
+          <a href="#results">Results</a>
+          <a href="#analysis">Analysis</a>
+          <a class="nav-paper" href="https://arxiv.org/abs/2605.20246" target="_blank" rel="noreferrer">
+            Paper <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <section class="hero" id="top">
+        <div class="hero-glow hero-glow-a" aria-hidden="true"></div>
+        <div class="hero-glow hero-glow-b" aria-hidden="true"></div>
+        <div class="hero-grid shell">
+          <div class="hero-copy" data-reveal>
+            <div class="eyebrow"><span></span> arXiv preprint · 2026</div>
+            <h1><span>GROW</span></h1>
+            <p class="hero-title">Aligning GRPO with State-Action Modeling for Open-World VLM Agents</p>
+            <p class="hero-lede">
+              Turning long, noisy rollouts into focused state–action learning signals—so VLM agents can
+              learn to navigate, craft, smelt, and fight in open worlds.
+            </p>
+
+            <div class="authors" aria-label="Authors">
+              <div>
+                <span>Xiongbin Wu<sup>1,2</sup></span>
+                <span>Zhihao Luo<sup>2,3</sup></span>
+                <span>Shanzhe Lei<sup>2</sup></span>
+                <span>Lechao Zhang<sup>2,3</sup></span>
+                <span>Xuhong Wang<sup>2</sup></span>
+              </div>
+              <div>
+                <span>Jie Yang<sup>1</sup></span>
+                <span>Zhonglong Zheng<sup>4</sup></span>
+                <span>Yuanjie Zheng<sup>5</sup></span>
+                <span>Xin Tan<sup>2,3,*</sup></span>
+                <span>Wei Liu<sup>1,*</sup></span>
+              </div>
+            </div>
+
+            <div class="hero-actions" aria-label="Project links">
+              <a class="button button-primary" href="https://arxiv.org/abs/2605.20246" target="_blank" rel="noreferrer">
+                <span class="paper-icon" aria-hidden="true">↗</span>
+                Paper
+              </a>
+              <a class="button button-ghost" href="https://github.com/wuxiongbin123/GROW" target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4 1.5-4-2-5-2m10 4v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.7-1.4 5.7-6.2A4.8 4.8 0 0 0 18 6c.1-.3.5-1.6-.1-3.2 0 0-1-.3-3.5 1.3a12 12 0 0 0-6.4 0C5.5 2.5 4.5 2.8 4.5 2.8 3.9 4.4 4.3 5.7 4.4 6a4.8 4.8 0 0 0-1.2 3.3c0 4.8 2.9 5.9 5.7 6.2-.4.4-.7 1-.7 2V21" /></svg>
+                Code
+              </a>
+              <a class="button button-ghost" href="https://huggingface.co/sys555/GROW" target="_blank" rel="noreferrer">
+                <span class="hf-icon" aria-hidden="true">◌</span> Model
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-media" data-reveal data-delay="120">
+            <div class="hero-mosaic">
+              <figure class="hero-clip clip-mine">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/mine-diamond-ore.png" data-autoplay aria-label="Agent mining diamond ore">
+                  <source src="assets/videos/mine-diamond-ore.mp4" type="video/mp4" />
+                </video>
+                <figcaption><span>01</span> Mine</figcaption>
+              </figure>
+              <figure class="hero-clip clip-craft">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/craft-iron-pickaxe.png" data-autoplay aria-label="Agent crafting an iron pickaxe">
+                  <source src="assets/videos/craft-iron-pickaxe.mp4" type="video/mp4" />
+                </video>
+                <figcaption><span>02</span> Craft</figcaption>
+              </figure>
+              <figure class="hero-clip clip-smelt">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/smelt-gold-ingot.png" data-autoplay aria-label="Agent smelting a gold ingot">
+                  <source src="assets/videos/smelt-gold-ingot.mp4" type="video/mp4" />
+                </video>
+                <figcaption><span>03</span> Smelt</figcaption>
+              </figure>
+              <figure class="hero-clip clip-combat">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/kill-guardian.png" data-autoplay aria-label="Agent fighting a guardian">
+                  <source src="assets/videos/kill-guardian.mp4" type="video/mp4" />
+                </video>
+                <figcaption><span>04</span> Combat</figcaption>
+              </figure>
+            </div>
+            <div class="media-note"><span class="live-dot"></span> Successful policy rollouts · pixel observations only</div>
+          </div>
+        </div>
+
+        <div class="affiliations shell" data-reveal>
+          <span><sup>1</sup> Shanghai Jiao Tong University</span>
+          <span><sup>2</sup> Shanghai Artificial Intelligence Laboratory</span>
+          <span><sup>3</sup> East China Normal University</span>
+          <span><sup>4</sup> Zhejiang Normal University</span>
+          <span><sup>5</sup> Shandong Normal University</span>
+          <span><sup>*</sup> Corresponding authors</span>
+        </div>
+      </section>
+
+      <section class="signal-strip" aria-label="Key results">
+        <div class="shell signal-grid">
+          <div data-reveal><strong>800<span>+</span></strong><p>Minecraft tasks</p></div>
+          <div data-reveal data-delay="60"><strong>+29.3<span> pp</span></strong><p>GUI success over prior best</p></div>
+          <div data-reveal data-delay="120"><strong>51.3<span>%</span></strong><p>fewer embodied steps</p></div>
+          <div data-reveal data-delay="180"><strong>3<span>/3</span></strong><p>task families, best reported</p></div>
+        </div>
+      </section>
+
+      <section class="section intro-section" id="overview">
+        <div class="shell">
+          <div class="section-heading split-heading" data-reveal>
+            <div>
+              <p class="kicker">The central idea</p>
+              <h2>RL that fits the world<br />it acts in.</h2>
+            </div>
+            <p class="section-lede">
+              Standard GRPO treats every full rollout as one optimization sample. In open worlds, that sample
+              quickly becomes too long and too noisy. GROW preserves the group-relative comparison, but moves the
+              learning unit to the decisions that matter: local states and actions.
+            </p>
+          </div>
+
+          <div class="contribution-grid">
+            <article class="contribution" data-reveal>
+              <span class="contribution-index">01</span>
+              <h3>Decompose trajectories</h3>
+              <p>Convert each multi-turn rollout into compact state–action samples with manageable context.</p>
+            </article>
+            <article class="contribution" data-reveal data-delay="80">
+              <span class="contribution-index">02</span>
+              <h3>Propagate sparse rewards</h3>
+              <p>Discount task-level success backward so decisions nearer completion receive stronger credit.</p>
+            </article>
+            <article class="contribution" data-reveal data-delay="160">
+              <span class="contribution-index">03</span>
+              <h3>Optimize relatively</h3>
+              <p>Normalize rewards across the decomposed rollout group and refine the policy without training a separate value model.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section rollouts-section" id="rollouts">
+        <div class="shell">
+          <div class="section-heading rollouts-heading" data-reveal>
+            <div>
+              <p class="kicker kicker-light">Policy rollouts</p>
+              <h2>One agent. Four kinds of skill.</h2>
+            </div>
+            <p>
+              GROW operates from first-person RGB pixels and human-like keyboard and mouse actions. Select a skill
+              family to explore successful rollouts.
+            </p>
+          </div>
+
+          <div class="rollout-toolbar" data-reveal>
+            <div class="tabs" role="tablist" aria-label="Filter rollout videos">
+              <button type="button" role="tab" aria-selected="true" data-filter="featured">All skills</button>
+              <button type="button" role="tab" aria-selected="false" data-filter="mine">Mining</button>
+              <button type="button" role="tab" aria-selected="false" data-filter="craft">Crafting</button>
+              <button type="button" role="tab" aria-selected="false" data-filter="smelt">Smelting</button>
+              <button type="button" role="tab" aria-selected="false" data-filter="combat">Combat</button>
+            </div>
+            <p class="rollout-count" aria-live="polite"><span data-visible-count>4</span> rollouts shown</p>
+          </div>
+
+          <div class="video-grid" data-video-grid>
+            <article class="video-card" data-category="mine" data-featured="true" data-reveal>
+              <div class="video-frame">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/mine-diamond-ore.png" data-gallery-video aria-label="Mine diamond ore rollout">
+                  <source src="assets/videos/mine-diamond-ore.mp4" type="video/mp4" />
+                </video>
+                <span class="video-status">Successful rollout</span>
+                <button class="video-toggle" type="button" aria-label="Pause Mine Diamond Ore video"><span>Ⅱ</span></button>
+              </div>
+              <div class="video-meta"><div><span>Embodied</span><h3>Mine Diamond Ore</h3></div><p>Navigate · align · mine</p></div>
+            </article>
+
+            <article class="video-card" data-category="mine" hidden>
+              <div class="video-frame">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/mine-birch-log.png" data-gallery-video aria-label="Mine birch log rollout">
+                  <source src="assets/videos/mine-birch-log.mp4" type="video/mp4" />
+                </video>
+                <span class="video-status">RL-trained task</span>
+                <button class="video-toggle" type="button" aria-label="Pause Mine Birch Log video"><span>Ⅱ</span></button>
+              </div>
+              <div class="video-meta"><div><span>Embodied</span><h3>Mine Birch Log</h3></div><p>Search · approach · harvest</p></div>
+            </article>
+
+            <article class="video-card" data-category="mine" hidden>
+              <div class="video-frame">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/mine-diorite.png" data-gallery-video aria-label="Mine diorite rollout">
+                  <source src="assets/videos/mine-diorite.mp4" type="video/mp4" />
+                </video>
+                <span class="video-status">RL-trained task</span>
+                <button class="video-toggle" type="button" aria-label="Pause Mine Diorite video"><span>Ⅱ</span></button>
+              </div>
+              <div class="video-meta"><div><span>Embodied</span><h3>Mine Diorite</h3></div><p>Ground · position · persist</p></div>
+            </article>
+
+            <article class="video-card" data-category="craft" data-featured="true" data-reveal data-delay="60">
+              <div class="video-frame">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/craft-iron-pickaxe.png" data-gallery-video aria-label="Craft iron pickaxe rollout">
+                  <source src="assets/videos/craft-iron-pickaxe.mp4" type="video/mp4" />
+                </video>
+                <span class="video-status">RL-trained task</span>
+                <button class="video-toggle" type="button" aria-label="Pause Craft Iron Pickaxe video"><span>Ⅱ</span></button>
+              </div>
+              <div class="video-meta"><div><span>GUI</span><h3>Craft Iron Pickaxe</h3></div><p>Plan · select · assemble</p></div>
+            </article>
+
+            <article class="video-card" data-category="craft" hidden>
+              <div class="video-frame">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/craft-furnace.png" data-gallery-video aria-label="Craft furnace rollout">
+                  <source src="assets/videos/craft-furnace.mp4" type="video/mp4" />
+                </video>
+                <span class="video-status">RL-trained task</span>
+                <button class="video-toggle" type="button" aria-label="Pause Craft Furnace video"><span>Ⅱ</span></button>
+              </div>
+              <div class="video-meta"><div><span>GUI</span><h3>Craft Furnace</h3></div><p>Open · browse · craft</p></div>
+            </article>
+
+            <article class="video-card" data-category="craft" hidden>
+              <div class="video-frame">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/craft-stone-shovel.png" data-gallery-video aria-label="Craft stone shovel rollout">
+                  <source src="assets/videos/craft-stone-shovel.mp4" type="video/mp4" />
+                </video>
+                <span class="video-status">Held out from RL</span>
+                <button class="video-toggle" type="button" aria-label="Pause Craft Stone Shovel video"><span>Ⅱ</span></button>
+              </div>
+              <div class="video-meta"><div><span>GUI</span><h3>Craft Stone Shovel</h3></div><p>Reason · browse · confirm</p></div>
+            </article>
+
+            <article class="video-card" data-category="smelt" data-featured="true" data-reveal data-delay="120">
+              <div class="video-frame">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/smelt-gold-ingot.png" data-gallery-video aria-label="Smelt gold ingot rollout">
+                  <source src="assets/videos/smelt-gold-ingot.mp4" type="video/mp4" />
+                </video>
+                <span class="video-status">RL-trained task</span>
+                <button class="video-toggle" type="button" aria-label="Pause Smelt Gold Ingot video"><span>Ⅱ</span></button>
+              </div>
+              <div class="video-meta"><div><span>GUI</span><h3>Smelt Gold Ingot</h3></div><p>Load · fuel · wait</p></div>
+            </article>
+
+            <article class="video-card" data-category="smelt" hidden>
+              <div class="video-frame">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/smelt-iron-ingot.png" data-gallery-video aria-label="Smelt iron ingot rollout">
+                  <source src="assets/videos/smelt-iron-ingot.mp4" type="video/mp4" />
+                </video>
+                <span class="video-status">Successful rollout</span>
+                <button class="video-toggle" type="button" aria-label="Pause Smelt Iron Ingot video"><span>Ⅱ</span></button>
+              </div>
+              <div class="video-meta"><div><span>GUI</span><h3>Smelt Iron Ingot</h3></div><p>Place · monitor · collect</p></div>
+            </article>
+
+            <article class="video-card" data-category="smelt" hidden>
+              <div class="video-frame">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/smelt-cooked-porkchop.png" data-gallery-video aria-label="Smelt cooked porkchop rollout">
+                  <source src="assets/videos/smelt-cooked-porkchop.mp4" type="video/mp4" />
+                </video>
+                <span class="video-status">RL-trained task</span>
+                <button class="video-toggle" type="button" aria-label="Pause Smelt Cooked Porkchop video"><span>Ⅱ</span></button>
+              </div>
+              <div class="video-meta"><div><span>GUI</span><h3>Smelt Cooked Porkchop</h3></div><p>Manipulate · wait · verify</p></div>
+            </article>
+
+            <article class="video-card" data-category="combat" data-featured="true" data-reveal data-delay="180">
+              <div class="video-frame">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/kill-guardian.png" data-gallery-video aria-label="Kill guardian rollout">
+                  <source src="assets/videos/kill-guardian.mp4" type="video/mp4" />
+                </video>
+                <span class="video-status">Held out from RL</span>
+                <button class="video-toggle" type="button" aria-label="Pause Kill Guardian video"><span>Ⅱ</span></button>
+              </div>
+              <div class="video-meta"><div><span>Combat</span><h3>Kill Guardian</h3></div><p>Track · evade · engage</p></div>
+            </article>
+
+            <article class="video-card" data-category="combat" hidden>
+              <div class="video-frame">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/kill-blaze.png" data-gallery-video aria-label="Kill blaze rollout">
+                  <source src="assets/videos/kill-blaze.mp4" type="video/mp4" />
+                </video>
+                <span class="video-status">RL-trained task</span>
+                <button class="video-toggle" type="button" aria-label="Pause Kill Blaze video"><span>Ⅱ</span></button>
+              </div>
+              <div class="video-meta"><div><span>Combat</span><h3>Kill Blaze</h3></div><p>Acquire · pursue · attack</p></div>
+            </article>
+
+            <article class="video-card" data-category="combat" hidden>
+              <div class="video-frame">
+                <video muted loop playsinline preload="metadata" poster="assets/posters/kill-witch.png" data-gallery-video aria-label="Kill witch rollout">
+                  <source src="assets/videos/kill-witch.mp4" type="video/mp4" />
+                </video>
+                <span class="video-status">Diagnostic task</span>
+                <button class="video-toggle" type="button" aria-label="Pause Kill Witch video"><span>Ⅱ</span></button>
+              </div>
+              <div class="video-meta"><div><span>Combat</span><h3>Kill Witch</h3></div><p>Search · reacquire · finish</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section method-section" id="method">
+        <div class="shell">
+          <div class="section-heading split-heading" data-reveal>
+            <div>
+              <p class="kicker">Why GROW</p>
+              <h2>Long horizons break the<br />standard formulation.</h2>
+            </div>
+            <p class="section-lede">
+              Full-trajectory GRPO accumulates every visual observation and action into one sample. By roughly 120
+              interaction steps, the mean context in our setting reaches 40K tokens—already beyond the 32K limit.
+              GROW avoids that growth while preserving the group-relative learning signal in a local surrogate objective.
+            </p>
+          </div>
+
+          <div class="motivation-grid">
+            <div class="motivation-copy" data-reveal>
+              <p class="big-quote"><span>Design principle</span>The optimization unit should match the agent’s decision unit.</p>
+              <div class="problem-list">
+                <div><span>×</span><p><strong>Excessive context</strong> grows linearly with interaction length.</p></div>
+                <div><span>×</span><p><strong>Noisy history</strong> obscures the observation that drives the current action.</p></div>
+                <div class="solution"><span>✓</span><p><strong>State–action samples</strong> keep context focused and appropriately sized for local decisions.</p></div>
+              </div>
+            </div>
+            <figure class="paper-figure motivation-figure" data-reveal data-delay="100">
+              <button class="figure-open" type="button" data-lightbox="assets/figures/context_len_vs_steps.png" data-caption="Context length grows with interaction steps and crosses the model limit.">
+                <img src="assets/figures/context_len_vs_steps.png" alt="Plot showing context length rising with interaction steps" loading="lazy" />
+                <span>Expand figure ↗</span>
+              </button>
+              <figcaption>Full-trajectory context grows beyond the maximum token length.</figcaption>
+            </figure>
+          </div>
+
+          <div class="method-block">
+            <div class="method-label" data-reveal><span>GROW framework</span><p>From long rollouts to local learning signals</p></div>
+            <figure class="paper-figure method-figure" data-reveal>
+              <button class="figure-open" type="button" data-lightbox="assets/main_picture.png" data-caption="Overview of GROW: rollout collection, trajectory decomposition, discounted reward propagation, and state-action relative optimization.">
+                <img src="assets/main_picture.png" alt="Overview diagram of the GROW reinforcement learning framework" loading="lazy" />
+                <span>Expand figure ↗</span>
+              </button>
+              <figcaption>
+                GROW decomposes grouped rollouts into state–action samples and propagates discounted rewards before
+                relative policy optimization.
+              </figcaption>
+            </figure>
+
+            <div class="method-steps">
+              <article data-reveal>
+                <div class="step-icon"><span>G</span></div>
+                <p class="step-number">Step 01</p>
+                <h3>Collect parallel rollouts</h3>
+                <p>Run the same instruction in <em>G</em> open-world environments and score each complete trajectory.</p>
+              </article>
+              <article data-reveal data-delay="70">
+                <div class="step-icon scissors" aria-hidden="true">✂</div>
+                <p class="step-number">Step 02</p>
+                <h3>Decompose &amp; propagate</h3>
+                <p>Split each trajectory by decision and discount the terminal reward backward through time.</p>
+                <code>r<sub>i,t</sub> = γ<sup>Hᵢ−t</sup> R(τᵢ)</code>
+              </article>
+              <article data-reveal data-delay="140">
+                <div class="step-icon"><span>Δ</span></div>
+                <p class="step-number">Step 03</p>
+                <h3>Compute relative advantage</h3>
+                <p>Normalize discounted rewards across the rollout group and optimize clipped policy ratios.</p>
+              </article>
+            </div>
+
+            <div class="analysis-callout" data-reveal>
+              <div>
+                <p class="kicker">Surrogate analysis</p>
+                <h3>The surrogate links trajectory and step signals.</h3>
+              </div>
+              <div class="equation" aria-label="J equals C gamma J trajectory plus J step">
+                𝒥 = C<sub>γ</sub> 𝒥<sub>traj</sub> + 𝒥<sub>step</sub>
+              </div>
+              <p>
+                Under simplifying assumptions, the first term reflects trajectory-level relative preference, while the
+                second sharpens temporal credit assignment inside successful trajectories.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section results-section" id="results">
+        <div class="shell">
+          <div class="section-heading results-heading" data-reveal>
+            <div>
+              <p class="kicker">Main results</p>
+              <h2>Higher success.<br />Fewer actions.</h2>
+            </div>
+            <p>
+              Across more than 800 Minecraft tasks, GROW sets the best reported success rate and execution efficiency
+              in embodied, GUI, and combat task families.
+            </p>
+          </div>
+
+          <div class="result-card-grid">
+            <article class="result-card result-embodied" data-reveal>
+              <div class="result-top"><span>Embodied</span><small>01</small></div>
+              <div class="result-value">59.6<sup>%</sup></div>
+              <p>Average success rate</p>
+              <div class="result-rule"></div>
+              <div class="result-bottom"><span><strong>+9.2 pp</strong> vs. prior best</span><span><strong>128</strong> steps</span></div>
+            </article>
+            <article class="result-card result-gui" data-reveal data-delay="80">
+              <div class="result-top"><span>GUI</span><small>02</small></div>
+              <div class="result-value">68.4<sup>%</sup></div>
+              <p>Average success rate</p>
+              <div class="result-rule"></div>
+              <div class="result-bottom"><span><strong>+29.3 pp</strong> vs. prior best</span><span><strong>248</strong> steps</span></div>
+            </article>
+            <article class="result-card result-combat" data-reveal data-delay="160">
+              <div class="result-top"><span>Combat</span><small>03</small></div>
+              <div class="result-value">49.0<sup>%</sup></div>
+              <p>Average success rate</p>
+              <div class="result-rule"></div>
+              <div class="result-bottom"><span><strong>+9.8 pp</strong> vs. prior best</span><span><strong>172</strong> steps</span></div>
+            </article>
+          </div>
+          <p class="result-note" data-reveal>ASR is reported as mean over all tasks in each category; standard deviations appear in the paper. “Prior best” follows the reported baselines.</p>
+
+          <div class="generalization-grid">
+            <div class="generalization-copy" data-reveal>
+              <p class="kicker">Generalization</p>
+              <h3>The gains travel to tasks held out from RL.</h3>
+              <p>
+                Starting from an SFT-initialized Qwen2-VL-7B policy, reinforcement learning uses only eight Minecraft
+                tasks. Yet the learned interaction strategies transfer across all three families, with the largest
+                RL-held-out gain in visually cluttered GUI operation.
+              </p>
+              <div class="training-facts">
+                <span><strong>8</strong> RL tasks</span><span><strong>240</strong> iterations</span><span><strong>γ = .995</strong></span>
+              </div>
+            </div>
+
+            <div class="bar-chart" role="img" aria-label="Initialized policy and GROW success rates on tasks held out from RL" data-reveal data-delay="100">
+              <div class="chart-legend"><span class="legend-before">Initialized</span><span class="legend-grow">GROW</span></div>
+              <div class="bar-group">
+                <div class="bar-label"><span>Embodied</span><strong>+17.3 pp</strong></div>
+                <div class="bar-row"><i class="bar before" style="--value: 41.9%"><b>41.9</b></i><i class="bar grow" style="--value: 59.2%"><b>59.2</b></i></div>
+              </div>
+              <div class="bar-group">
+                <div class="bar-label"><span>GUI</span><strong>+46.9 pp</strong></div>
+                <div class="bar-row"><i class="bar before" style="--value: 21.3%"><b>21.3</b></i><i class="bar grow" style="--value: 68.2%"><b>68.2</b></i></div>
+              </div>
+              <div class="bar-group">
+                <div class="bar-label"><span>Combat</span><strong>+27.7 pp</strong></div>
+                <div class="bar-row"><i class="bar before" style="--value: 19.8%"><b>19.8</b></i><i class="bar grow" style="--value: 47.5%"><b>47.5</b></i></div>
+              </div>
+              <p>Success rate on tasks held out from RL (%)</p>
+            </div>
+          </div>
+
+          <figure class="paper-figure curve-figure" data-reveal>
+            <div class="figure-heading">
+              <div><p class="kicker">Learning dynamics</p><h3>GROW learns faster than PPO on most training tasks.</h3></div>
+              <p>Eight RL tasks · identical training budget</p>
+            </div>
+            <button class="figure-open" type="button" data-lightbox="assets/figures/training_curves.png" data-caption="Training success curves comparing GROW and PPO across eight RL tasks.">
+              <img src="assets/figures/training_curves.png" alt="Eight plots comparing GROW and PPO success during training" loading="lazy" />
+              <span>Expand figure ↗</span>
+            </button>
+            <figcaption>GROW generally reaches high-success regions earlier and avoids long low-success plateaus.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section analysis-section" id="analysis">
+        <div class="shell">
+          <div class="section-heading split-heading" data-reveal>
+            <div>
+              <p class="kicker">Behavior-level analysis</p>
+              <h2>Rewards become<br />reusable behaviors.</h2>
+            </div>
+            <p class="section-lede">
+              Diagnostic tasks isolate what changes in the policy. GROW learns to hold alignment, recover lost targets,
+              and ignore irrelevant GUI elements—local behaviors that support many downstream tasks.
+            </p>
+          </div>
+
+          <div class="behavior-grid">
+            <article class="behavior-card" data-reveal>
+              <div class="behavior-value">63.3<sup>%</sup></div>
+              <span class="behavior-tag">Stable fixation</span>
+              <h3>Mine Obsidian with an Iron Pickaxe</h3>
+              <p>Sustain crosshair alignment across a long breaking sequence. Both compared baselines score 0%.</p>
+            </article>
+            <article class="behavior-card" data-reveal data-delay="80">
+              <div class="behavior-value">50.0<sup>%</sup></div>
+              <span class="behavior-tag">Target reacquisition</span>
+              <h3>Kill a Witch Starting Out of Sight</h3>
+              <p>Search, restore visual contact, pursue, and re-engage a moving target. Both baselines score 0%.</p>
+            </article>
+            <article class="behavior-card" data-reveal data-delay="160">
+              <div class="behavior-value">50.0<sup>%</sup></div>
+              <span class="behavior-tag">Distractor robustness</span>
+              <h3>Craft Cake with Visual Distractions</h3>
+              <p>Select the right recipe among irrelevant items, versus 40% for JARVIS-VLA and 2% before RL.</p>
+            </article>
+          </div>
+
+          <figure class="paper-figure diagnostic-figure" data-reveal>
+            <button class="figure-open" type="button" data-lightbox="assets/figures/diagnostic_tasks.png" data-caption="Success rates on three diagnostic tasks measuring target fixation, reacquisition, and GUI distractor robustness.">
+              <img src="assets/figures/diagnostic_tasks.png" alt="Bar chart of success on three diagnostic tasks" loading="lazy" />
+              <span>Expand figure ↗</span>
+            </button>
+          </figure>
+
+          <div class="case-studies">
+            <article class="story" data-reveal>
+              <div class="story-heading">
+                <div><span>Case study 01 · Combat</span><h3>Search → approach → engage</h3></div>
+                <p>The policy actively reacquires the Guardian, closes distance under attack, and sustains engagement.</p>
+              </div>
+              <div class="storyboard">
+                <figure><img src="assets/cases/guardian/01-search.png" alt="Agent searching for a guardian" loading="lazy" /><figcaption><b>01</b> Search the scene</figcaption></figure>
+                <figure><img src="assets/cases/guardian/02-approach.png" alt="Agent approaching a guardian while under attack" loading="lazy" /><figcaption><b>02</b> Reacquire &amp; approach</figcaption></figure>
+                <figure><img src="assets/cases/guardian/03-engage.png" alt="Agent completes the guardian combat task" loading="lazy" /><figcaption><b>03</b> Sustain engagement</figcaption></figure>
+              </div>
+            </article>
+
+            <article class="story" data-reveal>
+              <div class="story-heading">
+                <div><span>Case study 02 · GUI</span><h3>Locate → reason → craft</h3></div>
+                <p>The policy moves from embodied setup to recipe-book navigation and verifies the crafted Stone Shovel.</p>
+              </div>
+              <div class="storyboard">
+                <figure><img src="assets/cases/crafting/01-locate.png" alt="Agent locating and placing a crafting table" loading="lazy" /><figcaption><b>01</b> Locate the table</figcaption></figure>
+                <figure><img src="assets/cases/crafting/02-recipe.png" alt="Agent opening the crafting interface" loading="lazy" /><figcaption><b>02</b> Open &amp; reason</figcaption></figure>
+                <figure><img src="assets/cases/crafting/03-complete.png" alt="Agent selecting the stone shovel recipe" loading="lazy" /><figcaption><b>03</b> Complete the recipe</figcaption></figure>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="beyond-section">
+        <div class="shell beyond-grid">
+          <div data-reveal>
+            <p class="kicker kicker-light">Beyond Minecraft</p>
+            <h2>The formulation also applies beyond Minecraft.</h2>
+            <p>
+              When separately trained in simulated Language Table, GROW improves state–action policies for
+              language-conditioned manipulation—evidence that the framework is not tied to one game or one action space.
+            </p>
+          </div>
+          <div class="beyond-score" data-reveal data-delay="100">
+            <div class="score-row"><span>PPO</span><div><i style="--score: 65.02%"></i></div><strong>65.02</strong></div>
+            <div class="score-row grow-score"><span>GROW</span><div><i style="--score: 79.41%"></i></div><strong>79.41</strong></div>
+            <p>Average success rate across five task families <b>+14.39 pp</b></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section resources-section" id="resources">
+        <div class="shell">
+          <div class="section-heading resources-heading" data-reveal>
+            <div><p class="kicker">Resources</p><h2>Read. Run. Build.</h2></div>
+            <p>Paper, evaluation code, and the released checkpoint are publicly available.</p>
+          </div>
+
+          <div class="resource-grid">
+            <a href="https://arxiv.org/abs/2605.20246" target="_blank" rel="noreferrer" data-reveal>
+              <span class="resource-icon">P</span><div><small>arXiv · 2605.20246</small><h3>Read the paper</h3></div><b>↗</b>
+            </a>
+            <a href="https://github.com/wuxiongbin123/GROW" target="_blank" rel="noreferrer" data-reveal data-delay="70">
+              <span class="resource-icon">C</span><div><small>Evaluation code</small><h3>Explore the code</h3></div><b>↗</b>
+            </a>
+            <a href="https://huggingface.co/sys555/GROW" target="_blank" rel="noreferrer" data-reveal data-delay="140">
+              <span class="resource-icon">M</span><div><small>Hugging Face</small><h3>Get the model</h3></div><b>↗</b>
+            </a>
+          </div>
+
+          <div class="citation" data-reveal>
+            <div class="citation-heading"><div><p class="kicker">BibTeX</p><h3>Cite GROW</h3></div><button type="button" data-copy-bib>Copy citation</button></div>
+            <pre id="bibtex"><code>@article{wu2026grow,
+  title   = {GROW: Aligning GRPO with State-Action Modeling for Open-World VLM Agents},
+  author  = {Wu, Xiongbin and Luo, Zhihao and Lei, Shanzhe and Zhang, Lechao and
+             Wang, Xuhong and Yang, Jie and Zheng, Zhonglong and Zheng, Yuanjie and
+             Tan, Xin and Liu, Wei},
+  journal = {arXiv preprint arXiv:2605.20246},
+  year    = {2026}
+}</code></pre>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell footer-grid">
+        <div><a class="brand footer-brand" href="#top"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>GROW</span></a><p>GRPO for open-world VLM agents.</p></div>
+        <p class="footer-note">Research project page · arXiv 2026</p>
+        <div class="footer-links"><a href="https://arxiv.org/abs/2605.20246">Paper</a><a href="https://github.com/wuxiongbin123/GROW">Code</a><a href="https://huggingface.co/sys555/GROW">Model</a></div>
+      </div>
+    </footer>
+
+    <dialog class="lightbox" data-lightbox-dialog aria-label="Expanded paper figure">
+      <button class="lightbox-close" type="button" aria-label="Close expanded figure" data-lightbox-close>×</button>
+      <div><img src="" alt="" data-lightbox-image /><p data-lightbox-caption></p></div>
+    </dialog>
+  </body>
+</html>
